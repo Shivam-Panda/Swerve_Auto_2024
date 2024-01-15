@@ -9,7 +9,6 @@ import team4384.lib.util.COTSFalconSwerveConstants;
 import team4384.lib.util.SwerveModuleConstants;
 
 public class SwerveMap {
-    public static final int pigeonID = 1;
     public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
     public static final COTSFalconSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
@@ -78,7 +77,7 @@ public class SwerveMap {
     /* Swerve Profiling Values */
     /** Meters per Second */
     public static final double maxSpeed = 0.2; //TODO: This must be tuned to specific robot
-    public static final double maxTeleSpeed = 0.63; //TODO: This must be tuned to specific robot
+    public static final double maxTeleSpeed = 0.3; //TODO: This must be tuned to specific robot
     public static final double maxSlowTeleSpeed = 0.2; //TODO: This must be tuned to specific robot
     /** Radians per Second */
     public static final double maxAngularVelocity = 0.5; //TODO: This must be tuned to specific robot
@@ -86,8 +85,8 @@ public class SwerveMap {
     public static final double maxAcceleration = 0.1;
 
     /* Neutral Modes */
-    public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
-    public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
+    public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
+    public static final NeutralMode driveNeutralMode = NeutralMode.Coast;
 
     /* Module Specific Constants */
     /* Front Left Module - Module 0 */
@@ -95,7 +94,7 @@ public class SwerveMap {
         public static final int driveMotorID = 33;
         public static final int angleMotorID = 34;
         public static final int canCoderID = 42;
-        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(186.67968750000003);
+        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(5.712890);
         public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -105,7 +104,7 @@ public class SwerveMap {
         public static final int driveMotorID = 31;
         public static final int angleMotorID = 32;
         public static final int canCoderID = 41;
-        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(204.08203125);
+        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(26.71875);
         public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -115,7 +114,7 @@ public class SwerveMap {
         public static final int driveMotorID = 35;
         public static final int angleMotorID = 36;
         public static final int canCoderID = 43;
-        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(299.267578125);
+        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(117.4218875);
         public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -125,7 +124,7 @@ public class SwerveMap {
         public static final int driveMotorID = 37;
         public static final int angleMotorID = 38;
         public static final int canCoderID = 44;
-        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(349.98046875);
+        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(169.54101625);
         public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }

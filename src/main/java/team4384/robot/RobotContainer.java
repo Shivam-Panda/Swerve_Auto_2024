@@ -1,10 +1,13 @@
 package team4384.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -36,6 +39,7 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton zeroOdo = new JoystickButton(driver, 3);
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -53,7 +57,7 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(strafeAxis),
                 () -> driver.getRawAxis(rotationAxis),
                     () -> driver.getRawAxis(3),
-                    new JoystickButton(driver, 3),
+                    new JoystickButton(driver, 1),
                     new JoystickButton(driver, 4)
             )
         );
@@ -64,8 +68,14 @@ public class RobotContainer {
             s_Swerve::resetOdometry, 
             s_Swerve::getModuleStates, 
             s_Swerve::autoDrive, 
-            new HolonomicPathFollowerConfig(5.0, 0.4, new ReplanningConfig()),
-            () -> true, 
+            new HolonomicPathFollowerConfig(
+                    new PIDConstants(1.0, 1.0, 0),
+                    new PIDConstants(1.0, 1.0, 0),
+                    5.0,
+                    0.4,
+                    new ReplanningConfig()
+            ),
+            () -> false,
             s_Swerve);
         // Configure the button bindings
         configureButtonBindings();
@@ -80,6 +90,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        zeroOdo.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d())));
     }
 
     /**
@@ -88,70 +99,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerPath path = PathPlannerPath.fromPathFile("paths/First Path");
+        PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
         return AutoBuilder.followPath(path);
-    }
-
-    public void HandleArmJoystick() {
-        /** Intake Tuner */
-
-//        if (IntakeTurnUp.getAsBoolean()) {
-//            IntakeTuner.Up();
-//        }
-//        else if (IntakeTurnDown.getAsBoolean() && IntakeTuner.isLimit()) {
-//            IntakeTuner.Down();
-//        }
-//        else {
-//            IntakeTuner.stopMotor();
-//        }
-//
-//        /** Intake */
-//        SmartDashboard.putBoolean("Suck Cube", IntakeSuckCube.getAsBoolean());
-//        if (IntakeSuckCube.getAsBoolean()) {
-//            Intake.suckCube();
-//        }
-//        else if (IntakespitCube.getAsBoolean()) {
-//            if (-Manip.getRawAxis(1, .1) == -1) {
-//                Intake.spitCube(1);
-//            }
-//            else {
-//                Intake.spitCube();
-//            }
-//        }
-//        else if (IntakeSuckCone.getAsBoolean()) {
-//            Intake.suckCone();
-//        }
-//        else if (IntakespitCone.getAsBoolean()) {
-//            Intake.spitCone();
-//        }
-//        else {
-//            Intake.stop();
-//        }
-//
-//        /** Arm Base */
-//        if (Manip.getRawAxis(0, .1) == -1) {
-//            if (ArmDown.getAsBoolean()) {
-//                ArmBase.overrideDown();
-//            }
-//            else {
-//                ArmBase.stop();
-//            }
-//        }
-//        else {
-//            if (ArmUp.getAsBoolean()) {
-//                ArmBase.Up();
-//            }
-//            else if (ArmDown.getAsBoolean()) {
-//                ArmBase.Down();
-//            }
-//            else {
-//                ArmBase.stop();
-//            }
-//        }
-    }
-
-    public void UpdateSmartBoard() {
-//        IntakeTuner.display();
-//        ArmBase.display();
     }
 }

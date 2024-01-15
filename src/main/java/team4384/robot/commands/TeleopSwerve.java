@@ -6,7 +6,6 @@ import team4384.robot.constants.RobotMap;
 import team4384.robot.constants.SwerveMap;
 import team4384.robot.subsystems.Swerve;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,8 +17,6 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
-    private BooleanSupplier robotCentricSup;
-    private JoystickButton Rotate;
     private JoystickButton SlowMode;
     private JoystickButton resetGyro;
     private DoubleSupplier Inverted;
@@ -60,6 +57,7 @@ public class TeleopSwerve extends Command {
         if (Invert == 1 ||Invert == -1) {
             translationVal *= Invert;
             strafeVal *= Invert;
+            rotationVal *= Invert;
         }
 
         if (resetGyro.getAsBoolean()) {
