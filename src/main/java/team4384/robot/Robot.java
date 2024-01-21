@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import team4384.robot.constants.CTREConfigs;
 
 /**
@@ -25,6 +26,12 @@ import team4384.robot.constants.CTREConfigs;
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
   private RobotContainer m_robotContainer;
+
+  private Joystick driver = new Joystick(0);
+  private JoystickButton forward = new JoystickButton(driver, 7);
+  private double initX = 0;
+
+  private boolean toggle = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -64,7 +71,6 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_robotContainer.s_Swerve.zeroGyro();
     m_robotContainer.s_Swerve.resetOdometry(new Pose2d());
     m_robotContainer.getAutonomousCommand().schedule();
   }
@@ -86,7 +92,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Rotation", m_robotContainer.s_Swerve.gyro.getRotation2d().getDegrees());
     SmartDashboard.putNumber("X", m_robotContainer.s_Swerve.getPose().getX());
     SmartDashboard.putNumber("Y", m_robotContainer.s_Swerve.getPose().getY());
-  }
+    }
 
   @Override
   public void testInit() {

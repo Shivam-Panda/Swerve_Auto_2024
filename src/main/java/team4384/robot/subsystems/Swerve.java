@@ -53,7 +53,7 @@ public class Swerve extends SubsystemBase {
         Timer.delay(1.0);
         resetModulesToAbsolute();
 
-        swerveOdometry = new SwerveDriveOdometry(SwerveMap.swerveKinematics, getYaw(), getModulePositions());
+        swerveOdometry = new SwerveDriveOdometry(SwerveMap.swerveKinematics, gyro.getRotation2d(), getModulePositions());
 
         this.CanCoder = new GenericEntry[]{
                 driveTrainTab.add(mSwerveMods[0].moduleName + mSwerveMods[0].moduleNumber + " Cancoder", mSwerveMods[0].getCanCoder().getDegrees()).getEntry(),
@@ -104,7 +104,7 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }    
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {

@@ -86,7 +86,7 @@ public class SwerveMap {
 
     /* Neutral Modes */
     public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
-    public static final NeutralMode driveNeutralMode = NeutralMode.Coast;
+    public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
     /* Module Specific Constants */
     /* Front Left Module - Module 0 */
