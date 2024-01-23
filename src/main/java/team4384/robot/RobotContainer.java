@@ -10,6 +10,9 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -51,11 +54,14 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton zeroOdo = new JoystickButton(driver, 3);
     private final JoystickButton turner = new JoystickButton(driver, 8);
+    public final JoystickButton april = new JoystickButton(driver, 10);
 
     private final double kP = 0.08;
     private final double kD = 1.0;
     private final double kI = 0.1;
 
+    private NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-benzene");
+    private NetworkTableEntry tx = limelight.getEntry("tx");
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -107,6 +113,27 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         zeroOdo.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d())));
+
+        april.onTrue(new InstantCommand() {
+            public void execute() {
+                while(Math.abs(tx.getDouble(0.0)) > 0.25) {
+                    SmartDashboard.putNumber("TX", tx.getDouble(0.0));
+                    if(tx.getDouble(0.0) > 0) {
+                        s_Swerve.drive(
+                                new Translation2d(0, 0),
+                                -0.05,
+                                true,true
+                        );
+                    } else if(tx.getDouble(0.0) < 0) {
+                        s_Swerve.drive(
+                                new Translation2d(0, 0),
+                                0.05,
+                                true,true
+                        );
+                    }
+                }
+            }
+        });
 
         forward.onTrue(new Command() {
             private final Timer timer = new Timer();

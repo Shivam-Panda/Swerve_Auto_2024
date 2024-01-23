@@ -8,6 +8,9 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,11 +30,8 @@ public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
   private RobotContainer m_robotContainer;
 
-  private Joystick driver = new Joystick(0);
-  private JoystickButton forward = new JoystickButton(driver, 7);
-  private double initX = 0;
-
-  private boolean toggle = false;
+  private final NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-benzene");
+  private NetworkTableEntry tx = limelight.getEntry("tx");
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Rotation", m_robotContainer.s_Swerve.gyro.getRotation2d().getDegrees());
     SmartDashboard.putNumber("X", m_robotContainer.s_Swerve.getPose().getX());
     SmartDashboard.putNumber("Y", m_robotContainer.s_Swerve.getPose().getY());
-    }
+  }
 
   @Override
   public void testInit() {
