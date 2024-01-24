@@ -54,14 +54,13 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton zeroOdo = new JoystickButton(driver, 3);
     private final JoystickButton turner = new JoystickButton(driver, 8);
-    public final JoystickButton april = new JoystickButton(driver, 10);
+    public final JoystickButton stageCenter = new JoystickButton(driver, 10);
+    public final JoystickButton ampCenter = new JoystickButton(driver, 11);
+    public final JoystickButton speakerAim = new JoystickButton(driver, 12);
 
     private final double kP = 0.08;
     private final double kD = 1.0;
     private final double kI = 0.1;
-
-    private NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-benzene");
-    private NetworkTableEntry tx = limelight.getEntry("tx");
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -69,6 +68,8 @@ public class RobotContainer {
 //    private  BbArmBase ArmBase = new BbArmBase();
     /* Subsystems */
     public final Swerve s_Swerve = new Swerve();
+    private final Pivot s_Pivot = new Pivot();
+    private final Limelight limelight = new Limelight(s_Swerve, s_Pivot);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -85,8 +86,8 @@ public class RobotContainer {
         );
 
 
-        AutoBuilder.configureHolonomic(
-            s_Swerve::getPose, 
+       AutoBuilder.configureHolonomic(
+            s_Swerve::getPose,
             s_Swerve::resetOdometry, 
             s_Swerve::getModuleStates, 
             s_Swerve::autoDrive, 
@@ -111,29 +112,13 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        zeroGyro.onTrue(new InstantCommand(s_Swerve::zeroGyro));
         zeroOdo.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d())));
 
-        april.onTrue(new InstantCommand() {
-            public void execute() {
-                while(Math.abs(tx.getDouble(0.0)) > 0.25) {
-                    SmartDashboard.putNumber("TX", tx.getDouble(0.0));
-                    if(tx.getDouble(0.0) > 0) {
-                        s_Swerve.drive(
-                                new Translation2d(0, 0),
-                                -0.05,
-                                true,true
-                        );
-                    } else if(tx.getDouble(0.0) < 0) {
-                        s_Swerve.drive(
-                                new Translation2d(0, 0),
-                                0.05,
-                                true,true
-                        );
-                    }
-                }
-            }
-        });
+        // Limelight Implementations
+        speakerAim.onTrue(new InstantCommand(limelight::speaker_aim));
+        ampCenter.onTrue(new InstantCommand(limelight::amp_center));
+        stageCenter.onTrue(new InstantCommand(limelight::stage_center));
 
         forward.onTrue(new Command() {
             private final Timer timer = new Timer();
