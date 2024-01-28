@@ -58,9 +58,14 @@ public class RobotContainer {
     public final JoystickButton ampCenter = new JoystickButton(driver, 11);
     public final JoystickButton speakerAim = new JoystickButton(driver, 12);
 
-    private final double kP = 0.08;
-    private final double kD = 1.0;
-    private final double kI = 0.1;
+    // CTRE Example Values
+    private final double[] kCT = {10.0, 0.0, 0.0};
+    private final double[] kCR = {10.0, 0.0, 0.0};
+
+    // CheifDelphi Example Values
+
+    private final double[] kDT = {2.5, 0.0, 0.0};
+    private final double[] kDR = {5.0, 0.0, 0.0};
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -92,13 +97,13 @@ public class RobotContainer {
             s_Swerve::getModuleStates, 
             s_Swerve::autoDrive, 
             new HolonomicPathFollowerConfig(
-                    new PIDConstants(kP, kI, 0),
-                    new PIDConstants(kP, kI, 0),
+                    new PIDConstants(kCT[0], kCT[1], kCT[2]),
+                    new PIDConstants(kCR[0], kCR[1], kCR[2]),
                     5.0,
                     0.38,
                     new ReplanningConfig()
             ),
-            () -> false,
+            () -> false, // Consider Changing due to the flip
             s_Swerve);
         // Configure the button bindings
         configureButtonBindings();
@@ -120,6 +125,7 @@ public class RobotContainer {
         ampCenter.onTrue(new InstantCommand(limelight::amp_center));
         stageCenter.onTrue(new InstantCommand(limelight::stage_center));
 
+        // Square (Change to Odometry)
         forward.onTrue(new Command() {
             private final Timer timer = new Timer();
             @Override
