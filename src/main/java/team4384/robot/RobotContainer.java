@@ -73,7 +73,7 @@ public class RobotContainer {
     private static final PathPlannerAuto defaultAuto = new PathPlannerAuto("Example Auto");
     private static final PathPlannerAuto auto1 = new PathPlannerAuto("New Auto 1");
     private static final PathPlannerAuto auto2 = new PathPlannerAuto("New Auto 2");
-    private final SendableChooser<PathPlannerAuto> pathChooser = new SendableChooser<>();
+    private final SendableChooser<PathPlannerAuto> autoChooser = new SendableChooser<>();
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -87,10 +87,10 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Sendable Chooser Initialization
-        pathChooser.setDefaultOption("Default", defaultAuto);
-        pathChooser.addOption("Path 1", auto1);
-        pathChooser.addOption("Path 2", auto2);
-        SmartDashboard.putData("Auto Choices", pathChooser);
+        autoChooser.setDefaultOption("Default", defaultAuto);
+        autoChooser.addOption("Path 1", auto1);
+        autoChooser.addOption("Path 2", auto2);
+        SmartDashboard.putData("Auto Choices", autoChooser);
 
        s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -219,6 +219,23 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // Sendable Chooser Implementation
-        return pathChooser.getSelected();
+        return autoChooser.getSelected();
+    }
+
+    public Pose2d getStartingPose() {
+        PathPlannerAuto chosen = autoChooser.getSelected();
+        String name = "";
+        if(chosen == defaultAuto) {
+            name = "Example Auto";
+        }
+        else if(chosen == auto1) {
+            name = "New Auto 1";
+        }
+        else if(chosen == auto1) {
+            name = "New Auto 2";
+        } else {
+            name = "";
+        };
+        return PathPlannerAuto.getStaringPoseFromAutoFile(name);
     }
 }

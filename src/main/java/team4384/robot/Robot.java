@@ -4,6 +4,7 @@
 
 package team4384.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -71,7 +72,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_robotContainer.s_Swerve.resetOdometry(new Pose2d());
+    // Starting Pose set
+    m_robotContainer.s_Swerve.resetOdometry(m_robotContainer.getStartingPose());
     m_robotContainer.getAutonomousCommand().schedule();
   }
 
