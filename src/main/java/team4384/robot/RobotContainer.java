@@ -70,10 +70,10 @@ public class RobotContainer {
     private final double[] kDR = {5.0, 0.0, 0.0};
 
     // Sendable Chooser Init Values
-    private static final PathPlannerPath defaultAuto = PathPlannerPath.fromPathFile("Example Path");
-    private static final PathPlannerPath path1 = PathPlannerPath.fromPathFile("New Path 1");
-    private static final PathPlannerPath path2 = PathPlannerPath.fromPathFile("New Path 2");
-    private final SendableChooser<PathPlannerPath> pathChooser = new SendableChooser<>();
+    private static final PathPlannerAuto defaultAuto = new PathPlannerAuto("Example Auto");
+    private static final PathPlannerAuto auto1 = new PathPlannerAuto("New Auto 1");
+    private static final PathPlannerAuto auto2 = new PathPlannerAuto("New Auto 2");
+    private final SendableChooser<PathPlannerAuto> pathChooser = new SendableChooser<>();
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -88,8 +88,8 @@ public class RobotContainer {
     public RobotContainer() {
         // Sendable Chooser Initialization
         pathChooser.setDefaultOption("Default", defaultAuto);
-        pathChooser.addOption("Path 1", path1);
-        pathChooser.addOption("Path 2", path2);
+        pathChooser.addOption("Path 1", auto1);
+        pathChooser.addOption("Path 2", auto2);
         SmartDashboard.putData("Auto Choices", pathChooser);
 
        s_Swerve.setDefaultCommand(
@@ -219,6 +219,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // Sendable Chooser Implementation
-        return AutoBuilder.followPath(pathChooser.getSelected());
+        return pathChooser.getSelected();
     }
 }
