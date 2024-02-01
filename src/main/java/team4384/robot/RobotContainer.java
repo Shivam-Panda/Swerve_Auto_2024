@@ -13,11 +13,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -59,13 +61,19 @@ public class RobotContainer {
     public final JoystickButton speakerAim = new JoystickButton(driver, 12);
 
     // CTRE Example Values
-    private final double[] kCT = {10.0, 0.0, 0.0};
-    private final double[] kCR = {10.0, 0.0, 0.0};
+    private final double[] kCT = {1.0, 0.0, 0.0};
+    private final double[] kCR = {1.0, 0.0, 0.0};
 
     // CheifDelphi Example Values
 
     private final double[] kDT = {2.5, 0.0, 0.0};
     private final double[] kDR = {5.0, 0.0, 0.0};
+
+    // Sendable Chooser Init Values
+    private static final PathPlannerPath defaultAuto = PathPlannerPath.fromPathFile("Example Path");
+    private static final PathPlannerPath path1 = PathPlannerPath.fromPathFile("New Path 1");
+    private static final PathPlannerPath path2 = PathPlannerPath.fromPathFile("New Path 2");
+    private final SendableChooser<PathPlannerPath> pathChooser = new SendableChooser<>();
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -78,6 +86,12 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        // Sendable Chooser Initialization
+        pathChooser.setDefaultOption("Default", defaultAuto);
+        pathChooser.addOption("Path 1", path1);
+        pathChooser.addOption("Path 2", path2);
+        SmartDashboard.putData("Auto Choices", pathChooser);
+
        s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
@@ -204,7 +218,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
-        return AutoBuilder.followPath(path);
+        // Sendable Chooser Implementation
+        return AutoBuilder.followPath(pathChooser.getSelected());
     }
 }
