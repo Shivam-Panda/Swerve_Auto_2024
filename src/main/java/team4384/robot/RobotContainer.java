@@ -70,10 +70,10 @@ public class RobotContainer {
     private final double[] kDR = {5.0, 0.0, 0.0};
 
     // Sendable Chooser Init Values
-    private static final PathPlannerAuto defaultAuto = new PathPlannerAuto("Example Auto");
-    private static final PathPlannerAuto auto1 = new PathPlannerAuto("New Auto 1");
-    private static final PathPlannerAuto auto2 = new PathPlannerAuto("New Auto 2");
-    private final SendableChooser<PathPlannerAuto> autoChooser = new SendableChooser<>();
+    private PathPlannerAuto defaultAuto;
+    private PathPlannerAuto auto1;
+    private PathPlannerAuto auto2;
+    SendableChooser<PathPlannerAuto> autoChooser;
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -87,10 +87,6 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Sendable Chooser Initialization
-        autoChooser.setDefaultOption("Default", defaultAuto);
-        autoChooser.addOption("Path 1", auto1);
-        autoChooser.addOption("Path 2", auto2);
-        SmartDashboard.putData("Auto Choices", autoChooser);
 
        s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -119,6 +115,15 @@ public class RobotContainer {
             ),
             () -> false, // Consider Changing due to the flip
             s_Swerve);
+
+        defaultAuto = new PathPlannerAuto("Example Auto");
+        auto1 = new PathPlannerAuto("New Auto 1");
+        auto2 = new PathPlannerAuto("New Auto 2");
+
+        autoChooser.setDefaultOption("Default", defaultAuto);
+        autoChooser.addOption("Path 1", auto1);
+        autoChooser.addOption("Path 2", auto2);
+        SmartDashboard.putData("Auto Choices", autoChooser);
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -218,7 +223,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // Sendable Chooser Implementation
+//         Sendable Chooser Implementation
         return autoChooser.getSelected();
     }
 
