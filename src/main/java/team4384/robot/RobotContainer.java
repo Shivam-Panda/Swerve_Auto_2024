@@ -7,6 +7,8 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -60,6 +62,8 @@ public class RobotContainer {
     public final JoystickButton ampCenter = new JoystickButton(driver, 11);
     public final JoystickButton speakerAim = new JoystickButton(driver, 12);
 
+    public final CANSparkFlex vortex = new CANSparkFlex(61, CANSparkLowLevel.MotorType.kBrushless);
+
     // CTRE Example Values
     private final double[] kCT = {1.0, 0.0, 0.0};
     private final double[] kCR = {1.0, 0.0, 0.0};
@@ -70,10 +74,10 @@ public class RobotContainer {
     private final double[] kDR = {5.0, 0.0, 0.0};
 
     // Sendable Chooser Init Values
-    private PathPlannerAuto defaultAuto;
-    private PathPlannerAuto auto1;
-    private PathPlannerAuto auto2;
-    SendableChooser<PathPlannerAuto> autoChooser;
+//    private PathPlannerAuto defaultAuto;
+//    private PathPlannerAuto auto1;
+//    private PathPlannerAuto auto2;
+//    SendableChooser<Command> autoChooser;
 
     /* Subsystems */
 //    private  BbIntakeTurner IntakeTuner = new BbIntakeTurner();
@@ -100,12 +104,11 @@ public class RobotContainer {
             )
         );
 
-
        AutoBuilder.configureHolonomic(
             s_Swerve::getPose,
-            s_Swerve::resetOdometry, 
-            s_Swerve::getModuleStates, 
-            s_Swerve::autoDrive, 
+            s_Swerve::resetOdometry,
+            s_Swerve::getModuleStates,
+            s_Swerve::autoDrive,
             new HolonomicPathFollowerConfig(
                     new PIDConstants(kCT[0], kCT[1], kCT[2]),
                     new PIDConstants(kCR[0], kCR[1], kCR[2]),
@@ -116,15 +119,17 @@ public class RobotContainer {
             () -> false, // Consider Changing due to the flip
             s_Swerve);
 
-        defaultAuto = new PathPlannerAuto("Example Auto");
-        auto1 = new PathPlannerAuto("New Auto 1");
-        auto2 = new PathPlannerAuto("New Auto 2");
-
-        autoChooser.setDefaultOption("Default", defaultAuto);
-        autoChooser.addOption("Path 1", auto1);
-        autoChooser.addOption("Path 2", auto2);
-        SmartDashboard.putData("Auto Choices", autoChooser);
-        // Configure the button bindings
+//
+//        PathPlannerPath path1 = PathPlannerPath.fromPathFile("New Path 1");
+//        PathPlannerPath path2 = PathPlannerPath.fromPathFile("New Path 2");
+//
+//        Command auto1 = AutoBuilder.followPath(path1);
+//        Command auto2 = AutoBuilder.followPath(path2);
+//
+//        autoChooser.setDefaultOption("Default", auto1);
+//        autoChooser.addOption("Auto 2", auto2);
+//        SmartDashboard.putData("Auto Choices", autoChooser);
+//        // Configure the button bindings
         configureButtonBindings();
     }
 
@@ -137,7 +142,16 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(s_Swerve::zeroGyro));
-        zeroOdo.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d())));
+        zeroOdo.onTrue(new InstantCommand() {
+            public void execute() {
+                vortex.set(1.0);
+            }
+        });
+        zeroOdo.onFalse(new InstantCommand() {
+            public void execute() {
+                vortex.set(0);
+            }
+        });
 
         // Limelight Implementations
         speakerAim.onTrue(new InstantCommand(limelight::speaker_aim));
@@ -223,24 +237,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-//         Sendable Chooser Implementation
-        return autoChooser.getSelected();
+        PathPlannerPath path1 = PathPlannerPath.fromPathFile("Example Path");
+        return AutoBuilder.followPath(path1);
     }
 
-    public Pose2d getStartingPose() {
-        PathPlannerAuto chosen = autoChooser.getSelected();
-        String name = "";
-        if(chosen == defaultAuto) {
-            name = "Example Auto";
-        }
-        else if(chosen == auto1) {
-            name = "New Auto 1";
-        }
-        else if(chosen == auto1) {
-            name = "New Auto 2";
-        } else {
-            name = "";
-        };
-        return PathPlannerAuto.getStaringPoseFromAutoFile(name);
-    }
 }

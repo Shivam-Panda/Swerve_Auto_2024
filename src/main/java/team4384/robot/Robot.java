@@ -73,7 +73,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // Starting Pose set
-    m_robotContainer.s_Swerve.resetOdometry(m_robotContainer.getStartingPose());
     m_robotContainer.getAutonomousCommand().schedule();
   }
 
